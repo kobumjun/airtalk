@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
                   resolved.push({ type: 'image', imageUrl: existingUrl });
                   if (!image_url) image_url = existingUrl;
                 } else {
-                  console.error(`[Post API] image block ${i}: no file and no existing URL. formData keys:`, [...formData.keys()]);
+                  console.error(`[Post API] image block ${i}: no file and no existing URL. expected key: image_${imageIndex}`);
                   return NextResponse.json(
                     { error: `이미지 블록 ${i + 1}: 파일을 선택해 주세요. (서버가 파일을 받지 못했습니다.)` },
                     { status: 400 }
