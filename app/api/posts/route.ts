@@ -80,9 +80,12 @@ export async function POST(request: NextRequest) {
               resolved.push({ type: 'text', content: (block.content as string) || '' });
             } else if (type === 'image') {
               const raw = formData.get(`image_${imageIndex}`);
-              const file = raw instanceof File ? raw : raw instanceof Blob ? (raw as File) : null;
+              let file: File | null = null;
+              if (raw && typeof raw === 'object' && 'arrayBuffer' in raw) {
+                file = raw as File;
+              }
               const fileOk = file && file.size > 0;
-              console.log(`[Post API] image block ${i}: formData.get("image_${imageIndex}") type=${typeof raw} isFile=${raw instanceof File} size=${file?.size ?? 'N/A'}`);
+              console.log(`[Post API] image block ${i}: formData.get("image_${imageIndex}") type=${typeof raw} hasFile=${!!file} size=${file?.size ?? 'N/A'}`);
 
               if (fileOk) {
                 const result = await uploadFile(supabase, file!);
