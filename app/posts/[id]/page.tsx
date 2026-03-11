@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { getBlockImageUrl } from '@/lib/block-utils';
 import type { PostRow, ContentBlock } from '@/types/database';
 import type { Metadata } from 'next';
 
@@ -14,6 +15,11 @@ async function getPost(id: string): Promise<PostRow | null> {
     .eq('id', id)
     .single();
   if (error || !data) return null;
+  // DEBUG: inspect raw content_blocks from DB
+  const blocks = (data as Record<string, unknown>).content_blocks;
+  if (blocks) {
+    console.log('[Post Detail] raw content_blocks from DB:', JSON.stringify(blocks, null, 2));
+  }
   return data as PostRow;
 }
 
@@ -50,15 +56,6 @@ export default async function PostDetailPage({
   const blocks = post.content_blocks as ContentBlock[] | null;
   const hasBlocks = Array.isArray(blocks) && blocks.length > 0;
 
-  function getImageUrl(block: Record<string, unknown>): string | null {
-    const url =
-      (block.imageUrl as string) ??
-      (block.image_url as string) ??
-      (block.url as string) ??
-      (block.src as string);
-    return typeof url === 'string' && url.length > 0 ? url : null;
-  }
-
   return (
     <article className="max-w-2xl mx-auto px-4 py-8 sm:py-10">
       <Link
@@ -89,7 +86,7 @@ export default async function PostDetailPage({
               );
             }
             if (block.type === 'image') {
-              const src = getImageUrl(block as Record<string, unknown>);
+              const src = getBlockImageUrl(block as Record<string, unknown>);
               if (src) {
                 return (
                   <div

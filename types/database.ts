@@ -12,6 +12,8 @@ export type ReviewRow = {
   title: string;
   content: string;
   image_url: string | null;
+  content_blocks: ContentBlock[] | null;
+  contact_phone: string | null;
   created_at: string;
 };
 

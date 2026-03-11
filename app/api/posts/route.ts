@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { verifyAdminSession } from '@/lib/auth';
+import { getBlockImageUrl } from '@/lib/block-utils';
 import type { ContentBlock } from '@/types/database';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -17,7 +18,7 @@ function uploadFile(supabase: SupabaseClient, file: File): Promise<string | null
     .upload(fileName, file, { contentType: file.type, upsert: false })
     .then(({ data, error }) => {
       if (error) {
-        console.error('Post image upload error:', error);
+        console.error('[Post API] image upload error:', error);
         return null;
       }
       const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(data!.path);
@@ -68,32 +69,45 @@ export async function POST(request: NextRequest) {
 
     if (contentBlocksJson) {
       try {
-        const parsed = JSON.parse(contentBlocksJson) as ContentBlock[];
+        const parsed = JSON.parse(contentBlocksJson) as unknown[];
         if (Array.isArray(parsed) && parsed.length > 0) {
+          // DEBUG: inspect incoming blocks
+          console.log('[Post API] parsed content_blocks:', JSON.stringify(parsed, null, 2));
           const resolved: ContentBlock[] = [];
           let imageIndex = 0;
-          for (const block of parsed) {
-            if (block.type === 'text') {
-              resolved.push({ type: 'text', content: block.content || '' });
-            } else if (block.type === 'image') {
+          for (let i = 0; i < parsed.length; i++) {
+            const block = parsed[i] as Record<string, unknown>;
+            const type = block?.type;
+            if (type === 'text') {
+              resolved.push({ type: 'text', content: (block.content as string) || '' });
+            } else if (type === 'image') {
               const file = formData.get(`image_${imageIndex}`) as File | null;
+              const fileInfo = file
+                ? { hasFile: true, size: file.size, name: file.name }
+                : { hasFile: false };
+              console.log(`[Post API] image block ${i} file_${imageIndex}:`, fileInfo);
               if (file && file.size > 0) {
                 const url = await uploadFile(supabase, file);
+                console.log(`[Post API] upload result for image_${imageIndex}:`, url ? 'ok' : 'FAILED');
                 if (url) {
                   resolved.push({ type: 'image', imageUrl: url });
                   if (!image_url) image_url = url;
                 }
                 imageIndex++;
-              } else if (block.imageUrl) {
-                resolved.push({ type: 'image', imageUrl: block.imageUrl });
-                if (!image_url) image_url = block.imageUrl;
+              } else {
+                const existingUrl = getBlockImageUrl(block);
+                if (existingUrl) {
+                  resolved.push({ type: 'image', imageUrl: existingUrl });
+                  if (!image_url) image_url = existingUrl;
+                }
               }
             }
           }
           content_blocks = resolved.length > 0 ? resolved : null;
+          console.log('[Post API] resolved content_blocks:', JSON.stringify(content_blocks, null, 2));
         }
       } catch (e) {
-        console.error('content_blocks parse error:', e);
+        console.error('[Post API] content_blocks parse error:', e);
       }
     }
 
