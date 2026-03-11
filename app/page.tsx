@@ -29,7 +29,7 @@ export default async function HomePage() {
         <p className="text-xs font-semibold tracking-[0.2em] text-amber-400 mb-3 uppercase">
           현장 aircon total service
         </p>
-        <h1 className="hero-shimmer-text hero-keyword-glow text-2xl sm:text-3xl font-extrabold mb-3 leading-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold mb-3 leading-tight">
           상가 · 공장 · 사무실
           <br className="sm:hidden" />
           에어컨 설치 · 수리 · 철거까지
@@ -41,13 +41,13 @@ export default async function HomePage() {
         <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
           <Link
             href="/request"
-            className="hero-cta-glow inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-sm font-semibold text-white shadow-md transition"
+            className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-sm font-semibold text-white shadow-md transition"
           >
             현장 접수 · 견적 문의
           </Link>
           <a
             href={`tel:${PHONE_RAW}`}
-            className="hero-cta-glow inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-red-500/80 text-sm font-semibold text-red-200 hover:bg-red-700/20 transition"
+            className="inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-red-500/80 text-sm font-semibold text-red-200 hover:bg-red-700/20 transition"
           >
             📞 전화 상담 010-5816-4415
           </a>
@@ -70,7 +70,7 @@ export default async function HomePage() {
               <p className="text-[11px] sm:text-xs font-semibold tracking-[0.18em] text-gray-400 uppercase mb-1">
                 {item.label}
               </p>
-              <p className="text-lg sm:text-xl font-extrabold text-orange-400">
+              <p className="stat-value-shimmer text-lg sm:text-xl font-extrabold text-orange-400">
                 {item.value}
               </p>
             </div>
