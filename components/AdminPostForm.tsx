@@ -9,6 +9,7 @@ export default function AdminPostForm({ onSuccess }: Props) {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [image, setImage] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -23,10 +24,14 @@ export default function AdminPostForm({ onSuccess }: Props) {
     }
     setLoading(true);
     try {
+      const formData = new FormData();
+      formData.set('title', title.trim());
+      formData.set('content', content.trim());
+      if (image) formData.set('image', image);
+
       const res = await fetch('/api/posts', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: title.trim(), content: content.trim() }),
+        body: formData,
         credentials: 'include',
       });
       const data = await res.json().catch(() => ({}));
@@ -34,6 +39,7 @@ export default function AdminPostForm({ onSuccess }: Props) {
       setSuccess('글이 등록되었습니다.');
       setTitle('');
       setContent('');
+      setImage(null);
       onSuccess?.();
       router.refresh();
     } catch (err) {
@@ -79,6 +85,17 @@ export default function AdminPostForm({ onSuccess }: Props) {
           className="w-full px-4 py-2 border border-stone-700 rounded-xl bg-neutral-900 text-gray-100 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           placeholder="내용"
           required
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-100 mb-1">
+          대표 이미지 (선택)
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files?.[0] ?? null)}
+          className="w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-stone-800 file:text-gray-50"
         />
       </div>
       <button

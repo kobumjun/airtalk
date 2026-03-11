@@ -11,7 +11,7 @@ export async function GET() {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data, error } = await supabase
       .from('posts')
-      .select('id, title, content, created_at')
+      .select('id, title, content, image_url, created_at')
       .order('created_at', { ascending: false });
     if (error) {
       console.error(error);
@@ -30,17 +30,43 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: '로그인이 필요합니다.' }, { status: 401 });
   }
   try {
-    const body = await request.json();
-    const title = (body.title as string)?.trim();
-    const content = (body.content as string)?.trim();
+    const formData = await request.formData();
+    const title = (formData.get('title') as string | null)?.trim();
+    const content = (formData.get('content') as string | null)?.trim();
+    const imageFile = formData.get('image') as File | null;
+
     if (!title || !content) {
       return NextResponse.json(
         { error: '제목과 내용을 입력해 주세요.' },
         { status: 400 }
       );
     }
+
     const supabase = createClient(supabaseUrl, supabaseKey);
-    const { error } = await supabase.from('posts').insert({ title, content });
+    let imageUrl: string | null = null;
+
+    if (imageFile && imageFile.size > 0) {
+      const ext = imageFile.name.split('.').pop() || 'jpg';
+      const fileName = `${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2)}.${ext}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('review-images')
+        .upload(fileName, imageFile, {
+          contentType: imageFile.type,
+          upsert: false,
+        });
+      if (!uploadError && uploadData) {
+        const { data: urlData } = supabase.storage
+          .from('review-images')
+          .getPublicUrl(uploadData.path);
+        imageUrl = urlData.publicUrl;
+      }
+    }
+
+    const { error } = await supabase
+      .from('posts')
+      .insert({ title, content, image_url: imageUrl });
     if (error) {
       console.error(error);
       return NextResponse.json(

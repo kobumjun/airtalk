@@ -54,6 +54,16 @@ export default async function PostDetailPage({
       >
         ← 목록으로
       </Link>
+      {post.image_url && (
+        <div className="mb-6 rounded-2xl overflow-hidden border border-stone-800 bg-stone-900">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={post.image_url}
+            alt={post.title}
+            className="w-full max-h-[320px] object-cover"
+          />
+        </div>
+      )}
       <header className="mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-50 mb-2">
           {post.title}
