@@ -4,8 +4,8 @@
 
 :root {
   --foreground: #f9fafb;
-  --background: #020617;
-  --bg-rugged: linear-gradient(180deg, #020617 0%, #111827 45%, #1f2937 100%);
+  --background: #0b1324;
+  --bg-rugged: linear-gradient(180deg, #0b1324 0%, #111827 40%, #1a2332 100%);
 }
 
 body {

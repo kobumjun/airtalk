@@ -17,7 +17,7 @@ function formatDate(iso: string) {
 export default function ReviewList({ reviews }: Props) {
   if (reviews.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-500">
+      <div className="text-center py-12 text-gray-400">
         아직 등록된 후기가 없습니다.
       </div>
     );
@@ -28,14 +28,14 @@ export default function ReviewList({ reviews }: Props) {
       {reviews.map((review) => (
         <li
           key={review.id}
-          className="p-4 sm:p-6 bg-neutral-950/80 rounded-2xl border border-stone-800 shadow-sm"
+          className="p-4 sm:p-6 bg-slate-800/95 rounded-2xl border border-white/10 shadow-lg"
         >
           <h2 className="text-lg font-semibold text-gray-100 mb-2">
             {review.title}
           </h2>
-          <p className="text-gray-300 whitespace-pre-line mb-3">{review.content}</p>
+          <p className="text-gray-200 whitespace-pre-line mb-3">{review.content}</p>
           {review.image_url && (
-            <div className="w-full max-w-md rounded-lg overflow-hidden bg-stone-900 mb-3">
+            <div className="w-full max-w-md rounded-lg overflow-hidden bg-slate-900/80 mb-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={review.image_url}

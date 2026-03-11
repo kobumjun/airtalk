@@ -26,7 +26,7 @@ export default function RequestPage() {
     <div className="max-w-2xl mx-auto px-4 py-8 sm:py-12">
       <h1 className="text-2xl font-bold text-gray-50 mb-6">접수폼</h1>
 
-      <div className="prose prose-invert max-w-none mb-8 p-5 bg-stone-950/90 rounded-2xl border border-stone-800 text-sm text-gray-100 whitespace-pre-line">
+      <div className="prose prose-invert max-w-none mb-8 p-5 bg-slate-800/95 rounded-2xl border border-white/10 text-sm text-gray-200 whitespace-pre-line shadow-lg">
         에어컨 설치,수리,가스충전,철거,청소
 
         안녕하세요😄
@@ -39,7 +39,7 @@ export default function RequestPage() {
       </div>
 
       {submitted ? (
-        <div className="p-6 bg-stone-900 border border-stone-700 rounded-2xl text-center">
+        <div className="p-6 bg-slate-800/95 border border-white/10 rounded-2xl text-center shadow-lg">
           <p className="text-amber-300 font-medium mb-2">접수가 완료되었습니다.</p>
           <p className="text-sm text-gray-200 mb-4">
             SMS 앱이 열렸다면 메시지를 전송해 주세요. DB에도 저장되었습니다.

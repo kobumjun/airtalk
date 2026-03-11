@@ -55,7 +55,7 @@ export default async function PostDetailPage({
         ← 목록으로
       </Link>
       {post.image_url && (
-        <div className="mb-6 rounded-2xl overflow-hidden border border-stone-800 bg-stone-900">
+        <div className="mb-6 rounded-2xl overflow-hidden border border-white/10 bg-slate-800/95 shadow-lg">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={post.image_url}
@@ -70,7 +70,7 @@ export default async function PostDetailPage({
         </h1>
         <time className="text-sm text-gray-400">{dateStr}</time>
       </header>
-      <div className="prose prose-invert max-w-none text-gray-100 whitespace-pre-line">
+      <div className="prose prose-invert max-w-none text-gray-200 whitespace-pre-line">
         {post.content}
       </div>
     </article>

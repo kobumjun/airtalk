@@ -14,7 +14,7 @@ export async function GET() {
       .select('id, title, content, image_url, created_at')
       .order('created_at', { ascending: false });
     if (error) {
-      console.error(error);
+      console.error('Supabase posts GET error:', error);
       return NextResponse.json([], { status: 200 });
     }
     return NextResponse.json(data ?? []);
@@ -56,7 +56,9 @@ export async function POST(request: NextRequest) {
           contentType: imageFile.type,
           upsert: false,
         });
-      if (!uploadError && uploadData) {
+      if (uploadError) {
+        console.error('Post image upload error:', uploadError);
+      } else if (uploadData) {
         const { data: urlData } = supabase.storage
           .from('review-images')
           .getPublicUrl(uploadData.path);
@@ -68,15 +70,19 @@ export async function POST(request: NextRequest) {
       .from('posts')
       .insert({ title, content, image_url: imageUrl });
     if (error) {
-      console.error(error);
+      console.error('Supabase posts insert error:', error);
       return NextResponse.json(
-        { error: '저장 중 오류가 발생했습니다.' },
+        {
+          error:
+            error.message ||
+            '저장 중 오류가 발생했습니다. (Supabase posts insert)',
+        },
         { status: 500 }
       );
     }
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error(err);
+    console.error('Posts POST handler error:', err);
     return NextResponse.json(
       { error: '서버 오류가 발생했습니다.' },
       { status: 500 }

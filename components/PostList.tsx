@@ -26,7 +26,7 @@ function preview(text: string, maxLen: number) {
 export default function PostList({ posts }: Props) {
   if (posts.length === 0) {
     return (
-      <p className="text-slate-500 text-sm">등록된 글이 없습니다.</p>
+      <p className="text-gray-400 text-sm">등록된 글이 없습니다.</p>
     );
   }
 
@@ -36,10 +36,10 @@ export default function PostList({ posts }: Props) {
         <li key={post.id}>
           <Link
             href={`/posts/${post.id}`}
-            className="flex gap-3 sm:gap-4 p-4 sm:p-5 rounded-2xl bg-stone-900/90 hover:bg-stone-800 border border-stone-700 shadow-sm hover:shadow-md transition"
+            className="flex gap-3 sm:gap-4 p-4 sm:p-5 rounded-2xl bg-slate-800/95 hover:bg-slate-700/90 border border-white/10 shadow-lg hover:shadow-xl transition"
           >
             {post.image_url && (
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-stone-950 shrink-0">
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-slate-900 shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={post.image_url}
@@ -52,7 +52,7 @@ export default function PostList({ posts }: Props) {
               <h2 className="font-semibold text-gray-50 text-sm sm:text-base mb-1 line-clamp-2">
                 {post.title}
               </h2>
-              <p className="text-xs sm:text-sm text-gray-300 mb-2 line-clamp-2">
+              <p className="text-xs sm:text-sm text-gray-200 mb-2 line-clamp-2">
                 {preview(post.content, PREVIEW_LEN)}
               </p>
               <div className="mt-auto text-[11px] sm:text-xs text-gray-400">

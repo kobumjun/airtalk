@@ -25,7 +25,7 @@ export default async function HomePage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
       {/* Hero – rugged industrial */}
-      <section className="mb-8 rounded-3xl bg-gradient-to-br from-neutral-950 via-stone-900 to-zinc-900 border border-stone-800 px-5 py-8 sm:px-8 sm:py-10 text-left text-white shadow-xl">
+      <section className="mb-8 rounded-3xl bg-gradient-to-br from-slate-800 via-slate-800/95 to-slate-900 border border-white/10 px-5 py-8 sm:px-8 sm:py-10 text-left text-white shadow-xl">
         <p className="text-xs font-semibold tracking-[0.2em] text-amber-400 mb-3 uppercase">
           현장 aircon total service
         </p>
@@ -65,7 +65,7 @@ export default async function HomePage() {
           ].map((item) => (
             <div
               key={item.label}
-              className="rounded-2xl border border-stone-800 bg-neutral-950/80 px-3 py-4 sm:px-4 sm:py-5 shadow-inner"
+              className="rounded-2xl border border-white/10 bg-slate-800/95 px-3 py-4 sm:px-4 sm:py-5 shadow-lg"
             >
               <p className="text-[11px] sm:text-xs font-semibold tracking-[0.18em] text-gray-400 uppercase mb-1">
                 {item.label}
@@ -112,7 +112,7 @@ export default async function HomePage() {
       </section>
 
       {/* Latest posts */}
-      <section className="py-6 border-t border-stone-800/80">
+      <section className="py-6 border-t border-white/10">
         <h2 className="text-lg font-semibold text-gray-100 mb-4">최근 글</h2>
         <PostList posts={posts} />
       </section>
