@@ -10,20 +10,20 @@ const supabaseKey =
 
 const BUCKET = 'review-images';
 
-function uploadFile(supabase: SupabaseClient, file: File): Promise<string | null> {
+type UploadResult = { ok: true; url: string } | { ok: false; error: string };
+
+async function uploadFile(supabase: SupabaseClient, file: File): Promise<UploadResult> {
   const ext = file.name.split('.').pop() || 'jpg';
   const fileName = `post-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-  return supabase.storage
+  const { data, error } = await supabase.storage
     .from(BUCKET)
-    .upload(fileName, file, { contentType: file.type, upsert: false })
-    .then(({ data, error }) => {
-      if (error) {
-        console.error('[Post API] image upload error:', error);
-        return null;
-      }
-      const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(data!.path);
-      return urlData.publicUrl;
-    });
+    .upload(fileName, file, { contentType: file.type, upsert: false });
+  if (error) {
+    console.error('[Post API] image upload error:', error);
+    return { ok: false, error: error.message };
+  }
+  const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(data!.path);
+  return { ok: true, url: urlData.publicUrl };
 }
 
 export async function GET() {
@@ -71,8 +71,6 @@ export async function POST(request: NextRequest) {
       try {
         const parsed = JSON.parse(contentBlocksJson) as unknown[];
         if (Array.isArray(parsed) && parsed.length > 0) {
-          // DEBUG: inspect incoming blocks
-          console.log('[Post API] parsed content_blocks:', JSON.stringify(parsed, null, 2));
           const resolved: ContentBlock[] = [];
           let imageIndex = 0;
           for (let i = 0; i < parsed.length; i++) {
@@ -81,17 +79,23 @@ export async function POST(request: NextRequest) {
             if (type === 'text') {
               resolved.push({ type: 'text', content: (block.content as string) || '' });
             } else if (type === 'image') {
-              const file = formData.get(`image_${imageIndex}`) as File | null;
-              const fileInfo = file
-                ? { hasFile: true, size: file.size, name: file.name }
-                : { hasFile: false };
-              console.log(`[Post API] image block ${i} file_${imageIndex}:`, fileInfo);
-              if (file && file.size > 0) {
-                const url = await uploadFile(supabase, file);
-                console.log(`[Post API] upload result for image_${imageIndex}:`, url ? 'ok' : 'FAILED');
-                if (url) {
-                  resolved.push({ type: 'image', imageUrl: url });
-                  if (!image_url) image_url = url;
+              const raw = formData.get(`image_${imageIndex}`);
+              const file = raw instanceof File ? raw : raw instanceof Blob ? (raw as File) : null;
+              const fileOk = file && file.size > 0;
+              console.log(`[Post API] image block ${i}: formData.get("image_${imageIndex}") type=${typeof raw} isFile=${raw instanceof File} size=${file?.size ?? 'N/A'}`);
+
+              if (fileOk) {
+                const result = await uploadFile(supabase, file!);
+                if (result.ok) {
+                  resolved.push({ type: 'image', imageUrl: result.url });
+                  if (!image_url) image_url = result.url;
+                  console.log(`[Post API] upload ok image_${imageIndex}: ${result.url}`);
+                } else {
+                  console.error(`[Post API] upload FAILED image_${imageIndex}:`, result.error);
+                  return NextResponse.json(
+                    { error: `이미지 업로드 실패: ${result.error}` },
+                    { status: 500 }
+                  );
                 }
                 imageIndex++;
               } else {
@@ -99,23 +103,38 @@ export async function POST(request: NextRequest) {
                 if (existingUrl) {
                   resolved.push({ type: 'image', imageUrl: existingUrl });
                   if (!image_url) image_url = existingUrl;
+                } else {
+                  console.error(`[Post API] image block ${i}: no file and no existing URL. formData keys:`, [...formData.keys()]);
+                  return NextResponse.json(
+                    { error: `이미지 블록 ${i + 1}: 파일을 선택해 주세요. (서버가 파일을 받지 못했습니다.)` },
+                    { status: 400 }
+                  );
                 }
               }
             }
           }
           content_blocks = resolved.length > 0 ? resolved : null;
-          console.log('[Post API] resolved content_blocks:', JSON.stringify(content_blocks, null, 2));
         }
       } catch (e) {
         console.error('[Post API] content_blocks parse error:', e);
+        return NextResponse.json(
+          { error: 'content_blocks 파싱 오류' },
+          { status: 400 }
+        );
       }
     }
 
     // Legacy: single image
     const legacyImage = formData.get('image') as File | null;
     if (legacyImage && legacyImage.size > 0 && !image_url) {
-      const url = await uploadFile(supabase, legacyImage);
-      if (url) image_url = url;
+      const result = await uploadFile(supabase, legacyImage);
+      if (result.ok) image_url = result.url;
+      else {
+        return NextResponse.json(
+          { error: `이미지 업로드 실패: ${result.error}` },
+          { status: 500 }
+        );
+      }
     }
 
     // Use first text block or legacy content for `content` (backward compat)
@@ -137,6 +156,8 @@ export async function POST(request: NextRequest) {
       contact_phone: contactPhone,
       content_blocks,
     };
+
+    console.log('[Post API] BEFORE INSERT content_blocks:', JSON.stringify(row.content_blocks, null, 2));
 
     const { error } = await supabase.from('posts').insert(row);
     if (error) {

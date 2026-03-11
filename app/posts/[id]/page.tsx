@@ -15,10 +15,15 @@ async function getPost(id: string): Promise<PostRow | null> {
     .eq('id', id)
     .single();
   if (error || !data) return null;
-  // DEBUG: inspect raw content_blocks from DB
-  const blocks = (data as Record<string, unknown>).content_blocks;
-  if (blocks) {
-    console.log('[Post Detail] raw content_blocks from DB:', JSON.stringify(blocks, null, 2));
+  // DEBUG 2: exact loaded content_blocks from Supabase
+  const rawBlocks = (data as Record<string, unknown>).content_blocks;
+  console.log('[Post Detail] DB READ raw content_blocks:', JSON.stringify(rawBlocks, null, 2));
+  if (Array.isArray(rawBlocks)) {
+    rawBlocks.forEach((b: unknown, idx: number) => {
+      const obj = b as Record<string, unknown>;
+      const keys = Object.keys(obj);
+      console.log(`[Post Detail] DB block ${idx}: type=${obj.type} keys=[${keys.join(',')}] imageUrl=${obj.imageUrl} image_url=${obj.image_url} url=${obj.url} src=${obj.src}`);
+    });
   }
   return data as PostRow;
 }
@@ -75,6 +80,11 @@ export default async function PostDetailPage({
       {hasBlocks ? (
         <div className="space-y-6">
           {blocks.map((block, i) => {
+            // DEBUG 3: each block during render
+            const b = block as Record<string, unknown>;
+            const keys = Object.keys(b);
+            const imgUrl = getBlockImageUrl(b);
+            console.log(`[Post Detail] RENDER block ${i}: type=${b.type} keys=[${keys.join(',')}] getBlockImageUrl=${imgUrl ?? 'null'}`);
             if (block.type === 'text') {
               return (
                 <div
@@ -86,7 +96,7 @@ export default async function PostDetailPage({
               );
             }
             if (block.type === 'image') {
-              const src = getBlockImageUrl(block as Record<string, unknown>);
+              const src = imgUrl;
               if (src) {
                 return (
                   <div
