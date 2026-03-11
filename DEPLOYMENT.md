@@ -45,6 +45,8 @@ create table public.posts (
   title text not null,
   content text not null,
   image_url text,
+  contact_phone text,
+  content_blocks jsonb,
   created_at timestamptz default now()
 );
 
@@ -64,6 +66,14 @@ alter table public.posts enable row level security;
 create policy "Allow read posts" on public.posts for select using (true);
 -- Inserts/updates/deletes via API with service role
 create policy "Allow all for posts" on public.posts for all using (true) with check (true);
+```
+
+If you already have a `posts` table, run this migration instead:
+
+```sql
+alter table public.posts add column if not exists image_url text;
+alter table public.posts add column if not exists contact_phone text;
+alter table public.posts add column if not exists content_blocks jsonb;
 ```
 
 ### 1.3 Storage buckets
