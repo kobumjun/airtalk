@@ -130,17 +130,19 @@ export default function AdminPage() {
   if (!auth) {
     return (
       <div className="max-w-sm mx-auto px-4 py-16">
-        <h1 className="text-xl font-bold text-slate-800 mb-6 text-center">
+        <h1 className="text-xl font-bold text-gray-50 mb-6 text-center">
           관리자 로그인
         </h1>
         <form onSubmit={handleLogin} className="space-y-4">
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 p-2 rounded-xl">{error}</p>
+            <p className="text-sm text-red-200 bg-red-900/60 border border-red-700 p-2 rounded-xl">
+              {error}
+            </p>
           )}
           <div>
             <label
               htmlFor="admin-pw"
-              className="block text-sm font-medium text-slate-700 mb-1"
+              className="block text-sm font-medium text-gray-200 mb-1"
             >
               비밀번호
             </label>
@@ -149,13 +151,13 @@ export default function AdminPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-xl bg-white focus:ring-2 focus:ring-sky-400"
+              className="w-full px-4 py-2 border border-stone-700 rounded-xl bg-neutral-900 text-gray-100 focus:ring-2 focus:ring-orange-500"
               autoComplete="current-password"
             />
           </div>
           <button
             type="submit"
-            className="w-full py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-xl transition"
+            className="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-xl transition shadow-md"
           >
             로그인
           </button>
@@ -167,24 +169,24 @@ export default function AdminPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-slate-800">관리자페이지</h1>
+        <h1 className="text-2xl font-bold text-gray-50">관리자페이지</h1>
         <button
           type="button"
           onClick={handleLogout}
-          className="text-sm text-slate-500 hover:text-slate-700 transition"
+          className="text-sm text-gray-300 hover:text-white transition"
         >
           로그아웃
         </button>
       </div>
 
-      <div className="flex gap-2 mb-6 border-b border-slate-200">
+      <div className="flex gap-2 mb-6 border-b border-stone-800">
         <button
           type="button"
           onClick={() => setTab('reviews')}
           className={`px-4 py-2 text-sm font-medium rounded-t-xl transition ${
             tab === 'reviews'
-              ? 'bg-sky-50 text-sky-700 border-b-2 border-sky-500 -mb-px'
-              : 'text-slate-600 hover:text-slate-800'
+              ? 'bg-stone-900 text-amber-300 border-b-2 border-orange-500 -mb-px'
+              : 'text-gray-400 hover:text-gray-100'
           }`}
         >
           후기 관리
@@ -194,8 +196,8 @@ export default function AdminPage() {
           onClick={() => setTab('posts')}
           className={`px-4 py-2 text-sm font-medium rounded-t-xl transition ${
             tab === 'posts'
-              ? 'bg-sky-50 text-sky-700 border-b-2 border-sky-500 -mb-px'
-              : 'text-slate-600 hover:text-slate-800'
+              ? 'bg-stone-900 text-amber-300 border-b-2 border-orange-500 -mb-px'
+              : 'text-gray-400 hover:text-gray-100'
           }`}
         >
           글 관리
@@ -205,13 +207,13 @@ export default function AdminPage() {
       {tab === 'reviews' && (
         <div className="space-y-8">
           <section>
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">
+            <h2 className="text-lg font-semibold text-gray-100 mb-4">
               새 후기 등록
             </h2>
             <AdminReviewForm onSuccess={fetchReviews} />
           </section>
           <section>
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">
+            <h2 className="text-lg font-semibold text-gray-100 mb-4">
               등록된 후기 ({reviews.length})
             </h2>
             {loadingReviews ? (
@@ -223,13 +225,13 @@ export default function AdminPage() {
                 {reviews.map((r) => (
                   <li
                     key={r.id}
-                    className="flex items-center justify-between gap-4 p-4 bg-white rounded-xl border border-slate-200 shadow-sm"
+                    className="flex items-center justify-between gap-4 p-4 bg-neutral-950/80 rounded-xl border border-stone-800 shadow-sm"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-slate-800 truncate">
+                      <p className="font-medium text-gray-100 truncate">
                         {r.title}
                       </p>
-                      <p className="text-xs text-slate-500 mt-0.5">
+                      <p className="text-xs text-gray-500 mt-0.5">
                         {formatDate(r.created_at)}
                       </p>
                     </div>
@@ -239,7 +241,7 @@ export default function AdminPage() {
                         setConfirmDelete({ type: 'review', id: r.id })
                       }
                       disabled={deletingId === r.id}
-                      className="shrink-0 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
+                      className="shrink-0 px-3 py-1.5 text-sm text-red-200 hover:bg-red-900/60 rounded-lg border border-red-700 transition disabled:opacity-50"
                     >
                       {deletingId === r.id ? '삭제 중...' : '삭제'}
                     </button>
@@ -254,13 +256,13 @@ export default function AdminPage() {
       {tab === 'posts' && (
         <div className="space-y-8">
           <section>
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">
+            <h2 className="text-lg font-semibold text-gray-100 mb-4">
               새 글 등록
             </h2>
             <AdminPostForm onSuccess={fetchPosts} />
           </section>
           <section>
-            <h2 className="text-lg font-semibold text-slate-800 mb-4">
+            <h2 className="text-lg font-semibold text-gray-100 mb-4">
               등록된 글 ({posts.length})
             </h2>
             {loadingPosts ? (
@@ -272,13 +274,13 @@ export default function AdminPage() {
                 {posts.map((p) => (
                   <li
                     key={p.id}
-                    className="flex items-center justify-between gap-4 p-4 bg-white rounded-xl border border-slate-200 shadow-sm"
+                    className="flex items-center justify-between gap-4 p-4 bg-neutral-950/80 rounded-xl border border-stone-800 shadow-sm"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-slate-800 truncate">
+                      <p className="font-medium text-gray-100 truncate">
                         {p.title}
                       </p>
-                      <p className="text-xs text-slate-500 mt-0.5">
+                      <p className="text-xs text-gray-500 mt-0.5">
                         {formatDate(p.created_at)}
                       </p>
                     </div>
@@ -288,7 +290,7 @@ export default function AdminPage() {
                         setConfirmDelete({ type: 'post', id: p.id })
                       }
                       disabled={deletingId === p.id}
-                      className="shrink-0 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
+                      className="shrink-0 px-3 py-1.5 text-sm text-red-200 hover:bg-red-900/60 rounded-lg border border-red-700 transition disabled:opacity-50"
                     >
                       {deletingId === p.id ? '삭제 중...' : '삭제'}
                     </button>

@@ -36,14 +36,14 @@ export default function PostList({ posts }: Props) {
         <li key={post.id}>
           <Link
             href={`/posts/${post.id}`}
-            className="block p-5 bg-white/80 hover:bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition"
+            className="block p-5 rounded-2xl bg-stone-900/90 hover:bg-stone-800 border border-stone-700/80 shadow-sm hover:shadow-md transition"
           >
-            <h2 className="font-semibold text-slate-800 mb-1">{post.title}</h2>
-            <p className="text-sm text-slate-600 mb-2 line-clamp-2">
+            <h2 className="font-semibold text-gray-50 mb-1">{post.title}</h2>
+            <p className="text-sm text-gray-300 mb-2 line-clamp-2">
               {preview(post.content, PREVIEW_LEN)}
             </p>
-            <span className="text-xs text-slate-500">{formatDate(post.created_at)}</span>
-            <span className="ml-2 text-xs text-sky-600">자세히 보기 →</span>
+            <span className="text-xs text-gray-400">{formatDate(post.created_at)}</span>
+            <span className="ml-2 text-xs text-amber-400 font-semibold">자세히 보기 →</span>
           </Link>
         </li>
       ))}

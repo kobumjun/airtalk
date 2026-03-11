@@ -12,20 +12,20 @@ const navItems = [
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+    <header className="sticky top-0 z-50 bg-neutral-950/95 backdrop-blur border-b border-stone-800 shadow-lg">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
         <Link
           href="/"
-          className="text-lg font-bold text-slate-800 hover:text-sky-600 transition shrink-0"
+          className="text-lg font-extrabold text-amber-400 hover:text-amber-300 tracking-tight transition shrink-0"
         >
           에어컨의 수다방
         </Link>
-        <nav className="flex items-center gap-1 sm:gap-2 flex-wrap justify-end">
+        <nav className="flex items-center gap-1 sm:gap-2 flex-wrap justify-end text-xs sm:text-sm">
           {navItems.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-sky-600 hover:bg-sky-50/80 rounded-lg transition"
+              className="px-3 py-2 font-medium text-gray-200 hover:text-white hover:bg-stone-800/80 rounded-lg transition"
             >
               {label}
             </Link>
@@ -34,13 +34,13 @@ export default function Header() {
             href={BLOG}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-sky-600 hover:bg-sky-50/80 rounded-lg transition"
+            className="px-3 py-2 font-medium text-gray-200 hover:text-white hover:bg-stone-800/80 rounded-lg transition"
           >
             블로그
           </a>
           <a
             href={`tel:${PHONE_RAW}`}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-semibold text-white bg-sky-500 hover:bg-sky-600 rounded-lg shadow-sm transition shrink-0"
+            className="inline-flex items-center gap-1.5 px-3 py-2 font-semibold text-white bg-red-700 hover:bg-red-800 rounded-lg shadow-md transition shrink-0"
           >
             <span aria-hidden>📞</span>
             {PHONE}

@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --foreground: #1e293b;
-  --background: #f8fafc;
-  --sky-fade: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 35%, #f8fafc 100%);
+  --foreground: #f9fafb;
+  --background: #020617;
+  --bg-rugged: linear-gradient(180deg, #020617 0%, #111827 45%, #1f2937 100%);
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  background-image: var(--sky-fade);
+  background-image: var(--bg-rugged);
   background-attachment: fixed;
   min-height: 100vh;
 }

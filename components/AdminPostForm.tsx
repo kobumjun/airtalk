@@ -51,32 +51,32 @@ export default function AdminPostForm({ onSuccess }: Props) {
         </div>
       )}
       {success && (
-        <div className="p-3 bg-sky-50 border border-sky-200 rounded-xl text-sky-700 text-sm">
+        <div className="p-3 bg-emerald-900/60 border border-emerald-700 rounded-xl text-emerald-100 text-sm">
           {success}
         </div>
       )}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
+        <label className="block text-sm font-medium text-gray-100 mb-1">
           제목 *
         </label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-400 focus:border-sky-400 bg-white"
+          className="w-full px-4 py-2 border border-stone-700 rounded-xl bg-neutral-900 text-gray-100 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           placeholder="글 제목"
           required
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
+        <label className="block text-sm font-medium text-gray-100 mb-1">
           내용 *
         </label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={6}
-          className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-400 focus:border-sky-400 bg-white"
+          className="w-full px-4 py-2 border border-stone-700 rounded-xl bg-neutral-900 text-gray-100 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
           placeholder="내용"
           required
         />
@@ -84,7 +84,7 @@ export default function AdminPostForm({ onSuccess }: Props) {
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3 bg-sky-500 hover:bg-sky-600 disabled:bg-slate-400 text-white font-semibold rounded-xl transition"
+        className="w-full py-3 bg-orange-600 hover:bg-orange-700 disabled:bg-stone-600 text-white font-semibold rounded-xl transition shadow-md"
       >
         {loading ? '저장 중...' : '글 등록'}
       </button>

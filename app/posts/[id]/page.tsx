@@ -47,20 +47,20 @@ export default async function PostDetailPage({
   });
 
   return (
-    <article className="max-w-2xl mx-auto px-4 py-8">
+    <article className="max-w-2xl mx-auto px-4 py-8 sm:py-10">
       <Link
         href="/"
-        className="inline-block text-sm text-sky-600 hover:text-sky-700 mb-6"
+        className="inline-block text-sm text-amber-400 hover:text-amber-300 mb-4"
       >
         ← 목록으로
       </Link>
-      <header className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+      <header className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-50 mb-2">
           {post.title}
         </h1>
-        <time className="text-sm text-slate-500">{dateStr}</time>
+        <time className="text-sm text-gray-400">{dateStr}</time>
       </header>
-      <div className="prose prose-slate max-w-none text-slate-700 whitespace-pre-line">
+      <div className="prose prose-invert max-w-none text-gray-100 whitespace-pre-line">
         {post.content}
       </div>
     </article>

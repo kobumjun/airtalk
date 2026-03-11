@@ -28,14 +28,14 @@ export default function ReviewList({ reviews }: Props) {
       {reviews.map((review) => (
         <li
           key={review.id}
-          className="p-4 sm:p-6 bg-white/90 rounded-2xl border border-slate-200/80 shadow-sm"
+          className="p-4 sm:p-6 bg-neutral-950/80 rounded-2xl border border-stone-800 shadow-sm"
         >
-          <h2 className="text-lg font-semibold text-slate-800 mb-2">
+          <h2 className="text-lg font-semibold text-gray-100 mb-2">
             {review.title}
           </h2>
-          <p className="text-slate-600 whitespace-pre-line mb-3">{review.content}</p>
+          <p className="text-gray-300 whitespace-pre-line mb-3">{review.content}</p>
           {review.image_url && (
-            <div className="w-full max-w-md rounded-lg overflow-hidden bg-slate-100 mb-3">
+            <div className="w-full max-w-md rounded-lg overflow-hidden bg-stone-900 mb-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={review.image_url}
@@ -44,7 +44,7 @@ export default function ReviewList({ reviews }: Props) {
               />
             </div>
           )}
-          <time className="text-sm text-slate-400">{formatDate(review.created_at)}</time>
+          <time className="text-sm text-gray-500">{formatDate(review.created_at)}</time>
         </li>
       ))}
     </ul>

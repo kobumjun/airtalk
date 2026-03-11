@@ -5,7 +5,7 @@ const BLOG = 'https://m.blog.naver.com/han082755';
 
 export default function Footer() {
   return (
-    <footer className="mt-auto bg-slate-800/95 text-slate-200 border-t border-slate-700/50">
+    <footer className="mt-auto bg-neutral-950 text-slate-200 border-top border-stone-900/80">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6">
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
           <div className="text-center sm:text-left">
@@ -17,7 +17,7 @@ export default function Footer() {
           <div className="flex flex-col sm:items-end gap-1 text-sm">
             <a
               href={`tel:${PHONE.replace(/-/g, '')}`}
-              className="font-medium text-white hover:text-sky-300 transition"
+              className="font-medium text-white hover:text-amber-400 transition"
             >
               {PHONE}
             </a>
@@ -25,7 +25,7 @@ export default function Footer() {
               href={BLOG}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-sky-300 transition"
+              className="hover:text-amber-400 transition"
             >
               블로그
             </a>

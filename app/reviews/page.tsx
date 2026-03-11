@@ -24,7 +24,7 @@ export default async function ReviewsPage() {
   const reviews = await getReviews();
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">고객후기</h1>
+      <h1 className="text-2xl font-bold text-gray-50 mb-6">고객후기</h1>
       <ReviewList reviews={reviews} />
     </div>
   );
