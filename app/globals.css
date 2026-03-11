@@ -36,10 +36,19 @@ body {
 
 @keyframes hero-shimmer {
   0% {
-    background-position: 120% center;
+    background-position: 100% center;
   }
   100% {
-    background-position: -20% center;
+    background-position: 0% center;
+  }
+}
+
+@keyframes hero-cta-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.45);
   }
 }
 
@@ -51,27 +60,30 @@ body {
   background: linear-gradient(
     90deg,
     #f9fafb 0%,
-    #fef3c7 18%,
-    #f9fafb 36%,
-    #fef3c7 54%,
-    #f9fafb 72%,
-    #fef3c7 90%,
-    #f9fafb 100%
+    #fde68a 15%,
+    #f9fafb 30%,
+    #fde68a 45%,
+    #f9fafb 60%,
+    #fde68a 75%,
+    #f9fafb 90%,
+    #fde68a 100%
   );
-  background-size: 200% auto;
+  background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: hero-shimmer 8s ease-in-out infinite;
+  animation: hero-shimmer 5s linear infinite;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero-keyword-glow {
-  text-shadow: 0 0 24px rgba(251, 191, 36, 0.15);
+  filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.4));
 }
 
 .hero-cta-glow {
-  transition: box-shadow 0.4s ease;
+  animation: hero-cta-pulse 2.5s ease-in-out infinite;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
 .hero-cta-glow:hover {
-  box-shadow: 0 0 20px rgba(249, 115, 22, 0.25);
+  box-shadow: 0 0 24px rgba(249, 115, 22, 0.4);
 }
