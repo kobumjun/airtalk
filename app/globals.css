@@ -21,3 +21,57 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Homepage hero – subtle premium animations */
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-shimmer {
+  0% {
+    background-position: 120% center;
+  }
+  100% {
+    background-position: -20% center;
+  }
+}
+
+.hero-fade-up {
+  animation: hero-fade-up 0.7s ease-out both;
+}
+
+.hero-shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #f9fafb 0%,
+    #fef3c7 18%,
+    #f9fafb 36%,
+    #fef3c7 54%,
+    #f9fafb 72%,
+    #fef3c7 90%,
+    #f9fafb 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: hero-shimmer 8s ease-in-out infinite;
+}
+
+.hero-keyword-glow {
+  text-shadow: 0 0 24px rgba(251, 191, 36, 0.15);
+}
+
+.hero-cta-glow {
+  transition: box-shadow 0.4s ease;
+}
+.hero-cta-glow:hover {
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.25);
+}
