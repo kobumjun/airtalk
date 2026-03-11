@@ -14,3 +14,10 @@ export type ReviewRow = {
   image_url: string | null;
   created_at: string;
 };
+
+export type PostRow = {
+  id: string;
+  title: string;
+  content: string;
+  created_at: string;
+};

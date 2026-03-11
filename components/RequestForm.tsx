@@ -62,7 +62,7 @@ export default function RequestForm({ onSubmit }: Props) {
           type="text"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
-          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:border-sky-400"
           placeholder="주소를 입력하세요"
           required
         />
@@ -77,7 +77,7 @@ export default function RequestForm({ onSubmit }: Props) {
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:border-sky-400"
           placeholder="010-0000-0000"
           required
         />
@@ -92,7 +92,7 @@ export default function RequestForm({ onSubmit }: Props) {
           value={symptom}
           onChange={(e) => setSymptom(e.target.value)}
           rows={4}
-          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-400 focus:border-sky-400"
           placeholder="증상을 입력하세요"
           required
         />
@@ -107,14 +107,14 @@ export default function RequestForm({ onSubmit }: Props) {
           type="file"
           accept="image/*"
           onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
-          className="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-50 file:text-primary-700"
+          className="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-sky-50 file:text-sky-700"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3 px-4 bg-primary-500 hover:bg-primary-600 disabled:bg-slate-400 text-white font-semibold rounded-xl transition"
+        className="w-full py-3 px-4 bg-sky-500 hover:bg-sky-600 disabled:bg-slate-400 text-white font-semibold rounded-xl transition"
       >
         {loading ? '저장 중...' : '접수하기'}
       </button>

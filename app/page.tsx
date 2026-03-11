@@ -1,8 +1,10 @@
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
+import PostList from '@/components/PostList';
+import type { PostRow } from '@/types/database';
 
-const PHONE = '010-5816-4415';
-const PHONE_RAW = '01058164415';
 const BLOG = 'https://m.blog.naver.com/han082755';
+const PHONE_RAW = '01058164415';
 
 const SERVICES = [
   { label: '에어컨 설치', icon: '🔧' },
@@ -12,78 +14,74 @@ const SERVICES = [
   { label: '청소', icon: '✨' },
 ];
 
-export default function HomePage() {
+export const revalidate = 60;
+
+async function getPosts(): Promise<PostRow[]> {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return [];
+  const { data, error } = await supabase
+    .from('posts')
+    .select('id, title, content, created_at')
+    .order('created_at', { ascending: false })
+    .limit(10);
+  if (error) return [];
+  return data ?? [];
+}
+
+export default async function HomePage() {
+  const posts = await getPosts();
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Hero */}
-      <section className="text-center py-12 sm:py-16">
-        <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-2">
+    <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+      {/* Hero — minimal */}
+      <section className="text-center py-10 sm:py-14">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
           에어컨의 수다방
         </h1>
-        <p className="text-lg text-slate-600 mb-6">
+        <p className="text-slate-600 mb-8 max-w-md mx-auto">
           에어컨 설치, 수리, 가스충전, 철거, 청소 전문업체
         </p>
-
-        <a
-          href={`tel:${PHONE_RAW}`}
-          className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto py-4 px-6 bg-green-600 hover:bg-green-700 text-white text-lg font-semibold rounded-xl shadow-lg transition mb-4"
-        >
-          <span className="text-2xl">📞</span>
-          {PHONE}
-        </a>
-
-        <a
-          href={BLOG}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block text-primary-600 hover:text-primary-700 font-medium mb-8"
-        >
-          m.blog.naver.com/han082755
-        </a>
-
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="flex flex-wrap gap-3 justify-center">
           <Link
             href="/request"
-            className="inline-flex items-center justify-center py-3 px-6 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition"
+            className="inline-flex items-center justify-center py-2.5 px-5 bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium rounded-xl shadow-sm transition"
           >
             접수하기
           </Link>
           <Link
             href="/reviews"
-            className="inline-flex items-center justify-center py-3 px-6 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold rounded-xl transition"
+            className="inline-flex items-center justify-center py-2.5 px-5 bg-white border border-slate-200 hover:border-sky-300 hover:bg-sky-50/50 text-slate-700 text-sm font-medium rounded-xl shadow-sm transition"
           >
-            고객후기 보기
+            고객후기
           </Link>
         </div>
       </section>
 
       {/* Services */}
-      <section className="py-10 border-t border-slate-200">
-        <h2 className="text-xl font-bold text-slate-800 mb-6 text-center">
+      <section className="py-10">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">
           서비스 안내
         </h2>
-        <ul className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        <ul className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {SERVICES.map(({ label, icon }) => (
             <li
               key={label}
-              className="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200 shadow-sm"
+              className="flex items-center gap-3 p-4 bg-white/90 rounded-2xl border border-slate-200/80 shadow-sm"
             >
-              <span className="text-2xl">{icon}</span>
-              <span className="font-medium text-slate-700">{label}</span>
+              <span className="text-xl">{icon}</span>
+              <span className="font-medium text-slate-700 text-sm sm:text-base">
+                {label}
+              </span>
             </li>
           ))}
         </ul>
       </section>
 
-      {/* CTA */}
-      <section className="py-10 text-center">
-        <p className="text-slate-600 mb-4">빠른 방문 서비스를 제공합니다.</p>
-        <a
-          href={`tel:${PHONE_RAW}`}
-          className="inline-flex items-center gap-2 py-3 px-6 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl"
-        >
-          📞 전화 문의
-        </a>
+      {/* Latest posts */}
+      <section className="py-10">
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">
+          최근 글
+        </h2>
+        <PostList posts={posts} />
       </section>
     </div>
   );

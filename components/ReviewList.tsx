@@ -28,7 +28,7 @@ export default function ReviewList({ reviews }: Props) {
       {reviews.map((review) => (
         <li
           key={review.id}
-          className="p-4 sm:p-6 bg-white rounded-xl border border-slate-200 shadow-sm"
+          className="p-4 sm:p-6 bg-white/90 rounded-2xl border border-slate-200/80 shadow-sm"
         >
           <h2 className="text-lg font-semibold text-slate-800 mb-2">
             {review.title}

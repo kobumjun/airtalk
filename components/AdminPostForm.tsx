@@ -5,11 +5,10 @@ import { useRouter } from 'next/navigation';
 
 type Props = { onSuccess?: () => void };
 
-export default function AdminReviewForm({ onSuccess }: Props) {
+export default function AdminPostForm({ onSuccess }: Props) {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [photo, setPhoto] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -24,24 +23,17 @@ export default function AdminReviewForm({ onSuccess }: Props) {
     }
     setLoading(true);
     try {
-      const formData = new FormData();
-      formData.set('title', title.trim());
-      formData.set('content', content.trim());
-      if (photo) formData.set('photo', photo);
-
-      const res = await fetch('/api/reviews', {
+      const res = await fetch('/api/posts', {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title.trim(), content: content.trim() }),
         credentials: 'include',
       });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || '저장에 실패했습니다.');
-      }
-      setSuccess('후기가 등록되었습니다.');
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || '저장에 실패했습니다.');
+      setSuccess('글이 등록되었습니다.');
       setTitle('');
       setContent('');
-      setPhoto(null);
       onSuccess?.();
       router.refresh();
     } catch (err) {
@@ -54,62 +46,47 @@ export default function AdminReviewForm({ onSuccess }: Props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
           {error}
         </div>
       )}
       {success && (
-        <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+        <div className="p-3 bg-sky-50 border border-sky-200 rounded-xl text-sky-700 text-sm">
           {success}
         </div>
       )}
-
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">
-          후기 제목 *
+          제목 *
         </label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-400 focus:border-sky-400 bg-white"
-          placeholder="제목"
+          placeholder="글 제목"
           required
         />
       </div>
-
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">
-          후기 내용 *
+          내용 *
         </label>
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          rows={5}
+          rows={6}
           className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-400 focus:border-sky-400 bg-white"
           placeholder="내용"
           required
         />
       </div>
-
-      <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">
-          사진 (선택)
-        </label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
-          className="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-50 file:text-primary-700"
-        />
-      </div>
-
       <button
         type="submit"
         disabled={loading}
         className="w-full py-3 bg-sky-500 hover:bg-sky-600 disabled:bg-slate-400 text-white font-semibold rounded-xl transition"
       >
-        {loading ? '저장 중...' : '후기 등록'}
+        {loading ? '저장 중...' : '글 등록'}
       </button>
     </form>
   );

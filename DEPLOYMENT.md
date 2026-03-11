@@ -39,6 +39,14 @@ create table public.reviews (
   created_at timestamptz default now()
 );
 
+-- Posts (일반 글)
+create table public.posts (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  content text not null,
+  created_at timestamptz default now()
+);
+
 -- Allow public insert for requests (form submission)
 alter table public.requests enable row level security;
 create policy "Allow insert requests" on public.requests for insert with check (true);
@@ -49,6 +57,12 @@ create policy "Allow read reviews" on public.reviews for select using (true);
 
 -- Allow insert/update for reviews (admin will use service role or add auth later)
 create policy "Allow all for reviews" on public.reviews for all using (true) with check (true);
+
+-- Allow public read for posts
+alter table public.posts enable row level security;
+create policy "Allow read posts" on public.posts for select using (true);
+-- Inserts/updates/deletes via API with service role
+create policy "Allow all for posts" on public.posts for all using (true) with check (true);
 ```
 
 ### 1.3 Storage buckets
@@ -124,7 +138,7 @@ Redeploy after changing env vars.
 - [ ] Homepage loads; phone and blog links work.
 - [ ] **접수폼**: submit form; check Supabase `requests` table and SMS open on device.
 - [ ] **고객후기**: add a review from **관리자페이지**; confirm it appears on 고객후기.
-- [ ] **관리자페이지**: log in with `NEXT_PUBLIC_ADMIN_PASSWORD`; upload photo + publish review.
+- [ ] **관리자페이지**: log in with `ADMIN_PASSWORD`; manage reviews (create/delete) and posts (create/delete).
 - [ ] Set `NEXT_PUBLIC_SITE_URL` to your real domain and redeploy.
 - [ ] Add Google Search Console verification in env and/or layout if needed.
 
