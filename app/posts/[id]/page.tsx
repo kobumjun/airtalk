@@ -50,6 +50,15 @@ export default async function PostDetailPage({
   const blocks = post.content_blocks as ContentBlock[] | null;
   const hasBlocks = Array.isArray(blocks) && blocks.length > 0;
 
+  function getImageUrl(block: Record<string, unknown>): string | null {
+    const url =
+      (block.imageUrl as string) ??
+      (block.image_url as string) ??
+      (block.url as string) ??
+      (block.src as string);
+    return typeof url === 'string' && url.length > 0 ? url : null;
+  }
+
   return (
     <article className="max-w-2xl mx-auto px-4 py-8 sm:py-10">
       <Link
@@ -68,28 +77,37 @@ export default async function PostDetailPage({
 
       {hasBlocks ? (
         <div className="space-y-6">
-          {blocks.map((block, i) =>
-            block.type === 'text' ? (
-              <div
-                key={i}
-                className="prose prose-invert max-w-none text-gray-200 whitespace-pre-line"
-              >
-                {block.content}
-              </div>
-            ) : block.type === 'image' && block.imageUrl ? (
-              <div
-                key={i}
-                className="rounded-2xl overflow-hidden border border-white/10 bg-slate-800/95 shadow-lg"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={block.imageUrl}
-                  alt=""
-                  className="w-full max-h-[420px] object-cover"
-                />
-              </div>
-            ) : null
-          )}
+          {blocks.map((block, i) => {
+            if (block.type === 'text') {
+              return (
+                <div
+                  key={i}
+                  className="prose prose-invert max-w-none text-gray-200 whitespace-pre-line"
+                >
+                  {block.content ?? ''}
+                </div>
+              );
+            }
+            if (block.type === 'image') {
+              const src = getImageUrl(block as Record<string, unknown>);
+              if (src) {
+                return (
+                  <div
+                    key={i}
+                    className="rounded-2xl overflow-hidden border border-white/10 bg-slate-800/95 shadow-lg"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={src}
+                      alt=""
+                      className="w-full max-h-[420px] object-cover"
+                    />
+                  </div>
+                );
+              }
+            }
+            return null;
+          })}
         </div>
       ) : (
         <>
