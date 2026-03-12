@@ -11,7 +11,7 @@ export function generateSlug(title: string): string {
   // Replace common separators with hyphen
   s = s.replace(/[\s·\-\_]+/g, '-');
   // Remove or replace other non-URL-safe chars (keep letters, numbers, Korean, hyphens)
-  s = s.replace(/[^\p{L}\p{N}\p{Hangul}\-]/gu, '');
+  s = s.replace(/[^a-zA-Z0-9가-힣-]/g, "");
   // Collapse multiple hyphens
   s = s.replace(/-+/g, '-').replace(/^-|-$/g, '');
   return s.slice(0, 80) || 'post';
