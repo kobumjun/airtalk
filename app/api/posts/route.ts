@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { verifyAdminSession } from '@/lib/auth';
 import { getBlockImageUrl } from '@/lib/block-utils';
+import { generateSlug, slugWithSuffix } from '@/lib/slug';
 import type { ContentBlock } from '@/types/database';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -31,7 +32,7 @@ export async function GET() {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const { data, error } = await supabase
       .from('posts')
-      .select('id, title, content, image_url, contact_phone, content_blocks, created_at')
+      .select('id, title, slug, content, image_url, contact_phone, content_blocks, created_at')
       .order('created_at', { ascending: false });
     if (error) {
       console.error('Supabase posts GET error:', error);
@@ -152,15 +153,26 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    let slug = generateSlug(title);
+    if (!slug) slug = slugWithSuffix('post');
+    else {
+      const { data: existing } = await supabase
+        .from('posts')
+        .select('id')
+        .eq('slug', slug)
+        .limit(1)
+        .maybeSingle();
+      if (existing) slug = slugWithSuffix(slug);
+    }
+
     const row: Record<string, unknown> = {
       title,
+      slug,
       content: content || title,
       image_url,
       contact_phone: contactPhone,
       content_blocks,
     };
-
-    console.log('[Post API] BEFORE INSERT content_blocks:', JSON.stringify(row.content_blocks, null, 2));
 
     const { error } = await supabase.from('posts').insert(row);
     if (error) {

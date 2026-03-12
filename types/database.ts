@@ -24,6 +24,7 @@ export type ContentBlock =
 export type PostRow = {
   id: string;
   title: string;
+  slug: string | null;
   content: string;
   image_url: string | null;
   contact_phone: string | null;

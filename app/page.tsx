@@ -12,7 +12,7 @@ async function getPosts(): Promise<PostRow[]> {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return [];
   const { data, error } = await supabase
     .from('posts')
-    .select('id, title, content, image_url, contact_phone, content_blocks, created_at')
+    .select('id, title, slug, content, image_url, contact_phone, content_blocks, created_at')
     .order('created_at', { ascending: false })
     .limit(10);
   if (error) return [];

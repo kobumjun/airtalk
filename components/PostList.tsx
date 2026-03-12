@@ -29,10 +29,13 @@ export default function PostList({ posts }: Props) {
     <ul className="space-y-4">
       {posts.map((post) => {
         const thumb = getPostThumbnail(post);
+        const href = post.slug
+          ? `/blog/${encodeURIComponent(post.slug)}`
+          : `/posts/${post.id}`;
         return (
           <li key={post.id}>
             <Link
-              href={`/posts/${post.id}`}
+              href={href}
               className="flex gap-3 sm:gap-4 p-4 sm:p-5 rounded-2xl bg-slate-800/95 hover:bg-slate-700/90 border border-white/10 shadow-lg hover:shadow-xl transition"
             >
               {thumb && (

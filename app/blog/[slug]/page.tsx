@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { getBlockImageUrl } from '@/lib/block-utils';
 import type { PostRow, ContentBlock } from '@/types/database';
@@ -7,12 +7,13 @@ import type { Metadata } from 'next';
 
 export const revalidate = 60;
 
-async function getPost(id: string): Promise<PostRow | null> {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return null;
+async function getPostBySlug(slug: string): Promise<PostRow | null> {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !slug) return null;
+  const decoded = decodeURIComponent(slug);
   const { data, error } = await supabase
     .from('posts')
     .select('*')
-    .eq('id', id)
+    .eq('slug', decoded)
     .single();
   if (error || !data) return null;
   return data as PostRow;
@@ -21,29 +22,26 @@ async function getPost(id: string): Promise<PostRow | null> {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
-  const post = await getPost(id);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   if (!post) return { title: '글 찾을 수 없음' };
-  const desc = (post.content || '').replace(/\s+/g, ' ').trim().slice(0, 150) || post.title;
+  const desc = (post.content || '').replace(/\s+/g, ' ').trim().slice(0, 150);
   return {
     title: post.title,
-    description: desc,
+    description: desc || post.title,
   };
 }
 
-export default async function PostDetailPage({
+export default async function BlogDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
-  const post = await getPost(id);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   if (!post) notFound();
-  if (post.slug) {
-    redirect(`/blog/${encodeURIComponent(post.slug)}`);
-  }
 
   const dateStr = new Date(post.created_at).toLocaleDateString('ko-KR', {
     year: 'numeric',
@@ -73,8 +71,6 @@ export default async function PostDetailPage({
       {hasBlocks ? (
         <div className="space-y-6">
           {blocks.map((block, i) => {
-            const b = block as Record<string, unknown>;
-            const imgUrl = getBlockImageUrl(b);
             if (block.type === 'text') {
               return (
                 <div
@@ -86,7 +82,7 @@ export default async function PostDetailPage({
               );
             }
             if (block.type === 'image') {
-              const src = imgUrl;
+              const src = getBlockImageUrl(block as Record<string, unknown>);
               if (src) {
                 return (
                   <div
